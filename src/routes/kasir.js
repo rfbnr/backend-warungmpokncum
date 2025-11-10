@@ -147,20 +147,44 @@ router.get("/orders", async (req, res) => {
 });
 
 router.get("/orders/:id", async (req, res) => {
-  const { id } = req.params;
-  const order = await Order.findOne(id, {
-    include: [
-      {
-        model: OrderItem,
-        include: [{ model: OrderItemAddon, include: [Addon] }],
-        order: [["created_at", "ASC"]],
-      },
-      { model: Payment },
-    ],
-  });
-  if (!order) return res.status(404).json({ message: "Order not found" });
-  res.json(order);
+  try {
+    const { id } = req.params;
+    const order = await Order.findByPk(id, {
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: OrderItemAddon }], // ← Fixed: remove include: [Addon]
+          order: [["created_at", "ASC"]],
+        },
+        { model: Payment },
+      ],
+    });
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    res.json(order);
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
 });
+
+// router.get("/orders/:id", async (req, res) => {
+//   const { id } = req.params;
+//   const order = await Order.findByPk(id, {
+//     include: [
+//       {
+//         model: OrderItem,
+//         include: [{ model: OrderItemAddon }],
+//         order: [["created_at", "ASC"]],
+//       },
+//       { model: Payment },
+//     ],
+//   });
+//   if (!order) return res.status(404).json({ message: "Order not found" });
+//   res.json(order);
+// });
 
 router.post("/orders/:id/pay", async (req, res) => {
   const { id } = req.params;
