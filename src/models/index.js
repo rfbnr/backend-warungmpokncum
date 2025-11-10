@@ -6,6 +6,11 @@ require('dotenv').config();
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.js')[env];
+
+if (!config) {
+  throw new Error(`Configuration for environment "${env}" not found in config.js`);
+}
+
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);

@@ -4,11 +4,16 @@
   "description": "Warung Mpok Ncum backend (Express + Sequelize + MySQL)",
   "main": "src/app.js",
   "scripts": {
+    "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "migrate": "sequelize db:migrate --config sequelize.config.js --migrations-path src/migrations --models-path src/models",
     "seed": "sequelize db:seed:all --config sequelize.config.js --seeders-path src/seeders --models-path src/models",
     "undo:seed": "sequelize db:seed:undo:all --config sequelize.config.js --seeders-path src/seeders --models-path src/models",
     "undo:migrate": "sequelize db:migrate:undo:all --config sequelize.config.js --migrations-path src/migrations --models-path src/models"
+  },
+  "engines": {
+    "node": ">=18.x",
+    "npm": ">=9.x"
   },
   "keywords": [],
   "author": "",
